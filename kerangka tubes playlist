@@ -1,0 +1,116 @@
+// Deklarasi Global
+KONSTANTA MAX_LAGU = 100
+TYPE LAGU: {judul, artis, genre, durasi, id} // Struct/Record
+DEKLARASI playlist[MAX_LAGU] sebagai ARRAY of LAGU
+DEKLARASI jumlahLagu sebagai INTEGER
+
+FUNCTION Main()
+  jumlahLagu <- 0
+  DO
+    Tampilkan_Menu()
+    Baca Pilihan (pilihan)
+    IF pilihan == 1 THEN
+      Input_Lagu(playlist, jumlahLagu) // Percabangan (jika array penuh)
+    ELSE IF pilihan == 2 THEN
+      Tampilkan_Playlist(playlist, jumlahLagu) // Perulangan for
+    ELSE IF pilihan == 3 THEN
+      Urutkan_Playlist(playlist, jumlahLagu) // Sorting (Bubble/Selection)
+    ELSE IF pilihan == 4 THEN
+      Cari_Lagu(playlist, jumlahLagu) // Searching (Sequential/Binary)
+    ELSE IF pilihan == 5 THEN
+      Hapus_Lagu(playlist, jumlahLagu)
+    ELSE IF pilihan == 0 THEN
+      Cetak "Terima kasih!"
+    ELSE
+      Cetak "Pilihan tidak valid."
+    END IF
+  WHILE pilihan != 0
+END FUNCTION
+```
+
+#### 3. Detail Implementasi Fungsi
+
+##### A. Fungsi Input Lagu (`Input_Lagu`)
+Menggunakan percabangan untuk memeriksa kapasitas array dan perulangan `for` atau `do-while` jika ingin menginput banyak data sekaligus.
+
+```pseudocode
+FUNCTION Input_Lagu(playlist, jumlahLagu)
+  IF jumlahLagu < MAX_LAGU THEN
+    // Baca input untuk judul, artis, genre, durasi
+    // Set ID lagu: playlist[jumlahLagu].id <- jumlahLagu + 1
+    // Tambah jumlahLagu: jumlahLagu <- jumlahLagu + 1
+  ELSE
+    Cetak "Playlist sudah penuh!"
+  END IF
+END FUNCTION
+```
+
+##### B. Fungsi Urutkan Playlist (`Urutkan_Playlist`)
+Menggunakan materi **Sorting**. Kita bisa meminta pengguna memilih kriteria pengurutan (misalnya berdasarkan Judul atau Durasi).
+
+```pseudocode
+FUNCTION Urutkan_Playlist(playlist, jumlahLagu)
+  Tampilkan "Pilih kriteria sorting: 1. Judul (Asc) | 2. Durasi (Desc)"
+  Baca kriteria
+
+  // Implementasi Bubble Sort
+  FOR i DARI 0 SAMPAI jumlahLagu - 2 DO
+    FOR j DARI 0 SAMPAI jumlahLagu - 2 - i DO
+      IF kriteria == 1 (Urutkan Berdasarkan Judul) THEN
+        IF playlist[j].judul > playlist[j+1].judul THEN
+          Tukar playlist[j] DENGAN playlist[j+1]
+        END IF
+      ELSE IF kriteria == 2 (Urutkan Berdasarkan Durasi) THEN
+        IF playlist[j].durasi < playlist[j+1].durasi THEN // Descending
+          Tukar playlist[j] DENGAN playlist[j+1]
+        END IF
+      END IF
+    END FOR
+  END FOR
+  Cetak "Pengurutan Selesai."
+END FUNCTION
+```
+[Image of Bubble Sort Algorithm]
+
+##### C. Fungsi Cari Lagu (`Cari_Lagu`)
+Menggunakan materi **Searching**. Anda dapat menggunakan *Sequential Search* untuk mencari berdasarkan Artis/Genre, dan **Binary Search** untuk mencari berdasarkan Judul (setelah diurutkan).
+
+```pseudocode
+FUNCTION Cari_Lagu(playlist, jumlahLagu)
+  Tampilkan "Pilih metode pencarian: 1. Sequential (Artis) | 2. Binary (Judul)"
+  Baca metode
+
+  IF metode == 1 (Sequential Search Berdasarkan Artis) THEN
+    Baca "Nama Artis yang dicari (keyword): "
+    
+    // Perulangan for
+    FOR i DARI 0 SAMPAI jumlahLagu - 1 DO
+      IF playlist[i].artis MENGANDUNG keyword THEN
+        Cetak "Ditemukan di Index:", i
+        // Tampilkan detail lagu
+      END IF
+    END FOR
+    
+  ELSE IF metode == 2 (Binary Search Berdasarkan Judul) THEN
+    // Catatan: Binary Search HANYA BISA dilakukan jika playlist sudah diurutkan berdasarkan Judul!
+    Baca "Judul Lagu yang dicari: "
+    
+    // Inisialisasi awal, tengah, akhir
+    awal <- 0
+    akhir <- jumlahLagu - 1
+    
+    // Perulangan while
+    WHILE awal <= akhir DO
+      tengah <- (awal + akhir) / 2
+      IF playlist[tengah].judul SAMA DENGAN JudulDicari THEN
+        Cetak "Ditemukan di Index:", tengah
+        RETURN // Keluar dari fungsi
+      ELSE IF playlist[tengah].judul < JudulDicari THEN
+        awal <- tengah + 1 // Cari di sisi kanan
+      ELSE
+        akhir <- tengah - 1 // Cari di sisi kiri
+      END IF
+    END WHILE
+    Cetak "Lagu tidak ditemukan."
+  END IF
+END FUNCTION
